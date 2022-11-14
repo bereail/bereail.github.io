@@ -9,6 +9,9 @@
     <!-- Estilos CSS -->
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/pages/index.css">
+    <!-- Script -->
+    <script defer src="js/common.js"></script>
+    <script defer src="js/pages/index.js"></script>
 </head>
 
 <body>
@@ -31,20 +34,20 @@
         <section id="form-city-list">
             <form action="">
                 <div class="flex-item">
-                    <select name="SeleccioarCiudad" id="SeleccionarCiudad" onchange="consultarClima();">
+                    <select name="SeleccioarCiudad" id="SeleccionarCiudad" onchange="mostrarClima();">
                         <option selected disabled value>Seleccionar Ciudad</option>
-                        <option value="Rosario">Rosario</option>
-                        <option value="Rafaela">Baigorria</option>
                     </select>
                 </div>
                 <div class="flex-item">
-                    <input type="button" name="ConsultarCiudad" id="ConsultarCiudad" value="Consultar" class="btn" onclick="consultarClima();">
-                </div> 
+                    <input type="button" name="ConsultarCiudad" id="ConsultarCiudad" value="Consultar" class="btn" onclick="mostrarClima();">
+                </div>
             </form>
-            <div class="hide alert warning" id="alerta"></div>
+            <div class="alert warning" id="alerta">"No hay ciudades cargadas! Si desea agregar una ciudad diríjase a <a href='add-city.html'>Agregar Ciudad</a>"</div>
+            
         </section>
         <section id="section-weather-result">
-           <div class="hide card" id="mostrarClima">
+            <div class="loader" id="loader"></div>
+            <div class="card" id="resultadoClima">
                 <h3 id="ciudad"></h3>
                 <div id="icono"></div>
                 <div id="temp"></div>
@@ -52,8 +55,8 @@
                 <div id="humedad"></div>
                 <div id="velViento"></div>
                 <div id="presion"></div>
-           </div>
-        </section>  
+            </div>
+         </section>  
     </main>
     <footer>
         <p>

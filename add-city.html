@@ -9,9 +9,12 @@
     <!-- Estilos CSS -->
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/pages/add-city.css">
+    <!-- Scripts -->
+    <script defer src="js/common.js"></script>
+    <script defer src="js/pages/add-city.js"></script>
 </head>
 
-<body>
+<body onload="init();">
     <header>
         <h1>
             <img src="img/android-chrome-192x192.png" alt="favicon clima app">
@@ -31,17 +34,20 @@
         <section>
             <form action="">
                 <div class="flex-item">
-                    <label for="Ciudad">Inserte la ciudad a agregar:</label>
+                    <label for="InsertarCiudad">Inserte la ciudad a agregar:</label>
                     <br>
-                    <input type="text" name="Ciudad" id="Ciudad">
+                    <input type="text" name="InsertarCiudad" id="InsertarCiudad" required>
                 </div>
                 <div class="flex-item">
-                    <input type="button" value="Agregar" id="Agregar" class="btn" onclick="addNewCityToLocalStorage();">
-                    <input type="button" value="Borrar Lista" id="Borrar" class="btn" onclick="borrarDatos();"> 
+                    <input type="button" value="Agregar" class="btn" id="agregarCiudad">
+                    <input type="button" value="Borrar" class="btn" id="eliminarCiudades">
                 </div>
-                <div class="hide alert success" id="success"></div>
-                <div class="hide alert danger" id="danger"></div>
-                <div class="hide alert warning" id="warning"></div>
+                <div class="alert success" id="success">
+                    Ciudad agregada con exito
+                </div>
+                <div class="alert danger" id="danger"></div>
+                <div class="alert warning" id="warning"></div>
+                <div class="loader" id="loader"></div>
             </form>
         </section>
     </main>
@@ -51,6 +57,4 @@
         </p>
     </footer>
 </body>
-<script src="js/common.js"></script>
-<script src="js/pages/add-city.js"></script>
 </html>

@@ -1,53 +1,85 @@
-let ciudad = document.getElementById("Ciudad");
-let danger = document.getElementById("danger");
-let warning = document.getElementById("warning");
-let success = document.getElementById("success");
+function init(){
 
-function addNewCityToLocalStorage(){
+    let nuevaCiudad = document.getElementById("InsertarCiudad"); //input agregar ciudad
+    let agregarCiudad = document.getElementById("agregarCiudad"); //botón agregar ciudad
+    let eliminarCiudades = document.getElementById("eliminarCiudades"); //botón para limpiar localStorage
+    let success = document.getElementById("success"); // alerta ciudad agregada con exito
+    let danger = document.getElementById("danger"); // alerta error al cargar la ciudad
+    let warning = document.getElementById("warning"); // alerta la ciudad ya se encuentra almacenada
 
-    let newCity = formatearString(ciudad);
-    
-    ocultar(danger);
-    ocultar(warning);
-    ocultar(success);
 
-    // Verifico que el campo Ciudad este cargado
-    if (newCity != ""){
-        // Obtengo la lista de ciudades 
-        let cities = getCitiesFromLocalStorage();
-        // Verifico si la ciudad ya esta incluida
-        if(!cities.includes(newCity)){
-            // Cargar los datos en el localStorage, en caso de error muestro un mensaje 
-            try{
-                if(consultarAPI(newCity)){
-                    cities.push(newCity);
-                    localStorage.setItem("CITIES", JSON.stringify(cities));
-                    mostrar(success);
-                    success.innerHTML = "Ciudad agregada con exito";
-                }else{
-                    throw new Error();
-                }
-            }catch{
-                mostrar(danger);
-                danger.innerHTML = "Error: La ciudad ingresada no se encuetra en la API o se produjo un error al consultar";
-            } 
-        }else{
-            mostrar(warning);
-            warning.innerHTML = "La ciudad ingresada ya se encuentra almacenada";
+    agregarCiudad.onclick = function (e) {
+
+        ocultarAlerta(); //oculto las alertas
+
+        let newCity = nuevaCiudad.value;
+        
+        //valido que se haya completado el campo 
+        if (newCity != ""){
+        
+            newCity = formatearString(newCity); 
+
+            //Verifico si la ciudad se encuentra almacenada
+            if(validarCiudadEnLocalStorage(newCity)){ 
+                
+                // llamo a la API para verificar que la ciudad ingresada retorna una respuesta
+                consultarAPI(newCity).then(() => {
+                    try{
+                        addNewCityToLocalStorage(newCity); //agrego la ciudad al localStorage
+                        mostrar(success); //muestro alerta: ciudad almacenada con exito
+                    } catch {
+                        mostrar(danger); //muestro alerta: error al cargar la ciudad
+                        danger.innerHTML = " Error: La ciudad ingresada no se pudo ser almacenada"
+                    }  
+                }).catch(() => {
+                    mostrar(danger); 
+                    danger.innerHTML= "Error: La ciudad ingresada no se encontró en los registros del clima";
+                }).finally(()=> {
+                    document.getElementById("loader").style.display = "none";
+                });
+
+            } else {
+                mostrar(warning); //muestro alerta: la ciudad ya se encuentra almacenada
+                warning.innerHTML = "La ciudad ingresada ya se encuentra almacenada";
+            }
+        } else {
+            mostrar(warning); 
+            warning.innerHTML = "Debe completar el campo ciudad";
         }
-
-    }else{
-        mostrar(warning);
-        warning.innerHTML = "Debe completar el campo";
     }
-}   
 
-function formatearString(ciudad){
-    return ciudad.value.charAt(0).toUpperCase() + ciudad.value.slice(1);
+    eliminarCiudades.onclick = function (e) {
+        limpiarLocalStorage();
+    }
+
+    
 }
 
-function borrarDatos(){
+// Agrego la nueva ciudad al localStorage
+function addNewCityToLocalStorage(newCity) {    
+
+    let cities = getCitiesFromLocalStorage();
+    cities.push(newCity);
+    localStorage.setItem('CITIES', JSON.stringify(cities));
+    console.log(cities);
+}
+
+
+// Devuelvo la ciudad ingresada con la primera letra en mayuscula y el resto en minuscula
+function formatearString(newCity){
+    return newCity.charAt(0).toUpperCase() + newCity.slice(1);
+}
+
+//Retorno true si la ciudad ya se encuentra almacenada, de lo contrario false.
+function validarCiudadEnLocalStorage(newCity){
+    let cities = getCitiesFromLocalStorage();
+    if(cities.includes(newCity)){
+        return false;
+    }
+    return true;
+}
+
+function limpiarLocalStorage(){
     localStorage.clear();
-    alert("LocalStorage borrado!");
 }
 
